@@ -6,3 +6,12 @@ class Place(models.Model):
     description_long = models.TextField()
     longitude = models.FloatField()
     latitude = models.FloatField()
+
+class PlaceImage(models.Model):
+    place = models.ForeignKey(
+        Place,
+        on_delete=models.CASCADE,
+        verbose_name='Локация',
+        related_name='images')
+    image = models.ImageField('Картинка')
+    order = models.IntegerField('Порядок')
