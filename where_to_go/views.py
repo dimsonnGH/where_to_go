@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.shortcuts import render, get_object_or_404
+from django.urls import reverse
 from where_to_go.settings import STATIC_URL
 from places.models import Place, PlaceImage
 
@@ -16,7 +17,7 @@ def index(request) :
         "properties" : {
             "title" : place.title,
             "placeId" : place.placeId,
-            "detailsUrl" : "url"
+            "detailsUrl" : reverse('place_json', kwargs={'placeId':place.placeId})
         }
     } for place in places]
 
@@ -30,11 +31,10 @@ def index(request) :
 
 
 def place_json(request, placeId) :
-    place = get_object_or_404(Place, placeId=placeId)
-    images = PlaceImage.objects.filter(place=place)
+    place = get_object_or_404(Place.objects.prefetch_related('images'), placeId=placeId)
     data = {
         "title" : place.title,
-        "imgs" : [image.image.url for image in images],
+        "imgs" : [image.image.url for image in place.images.all()],
         "description_short" : place.description_short,
         "description_long" : place.description_long,
         "coordinates" : {
