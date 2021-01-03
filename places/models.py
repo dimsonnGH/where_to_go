@@ -8,6 +8,10 @@ class Place(models.Model):
     longitude = models.FloatField()
     latitude = models.FloatField()
 
+    def __str__(self):
+        return self.title
+
+
 class PlaceImage(models.Model):
     place = models.ForeignKey(
         Place,
@@ -15,4 +19,7 @@ class PlaceImage(models.Model):
         verbose_name='Локация',
         related_name='images')
     image = models.ImageField('Картинка')
-    order = models.IntegerField('Порядок')
+    order = models.IntegerField('Порядок', default=0)
+
+    class Meta(object) :
+        ordering = ['order']
