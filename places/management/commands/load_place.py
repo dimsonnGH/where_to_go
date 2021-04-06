@@ -28,7 +28,7 @@ class Command(BaseCommand):
             }
         )
 
-        if True or created:
+        if created:
             order = 1
             for img_url in json['imgs']:
                 response = requests.get(img_url)
