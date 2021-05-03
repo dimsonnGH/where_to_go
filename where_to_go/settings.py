@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 import os
-from dotenv import load_dotenv
 from environs import Env
 
 
@@ -21,10 +20,9 @@ from environs import Env
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 env_path = os.path.join(BASE_DIR, 'env\.env')
-load_dotenv(dotenv_path=env_path)
 
 env = Env()
-env.read_env()
+env.read_env(env_path)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/

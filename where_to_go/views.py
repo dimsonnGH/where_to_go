@@ -16,8 +16,8 @@ def index(request) :
         },
         "properties" : {
             "title" : place.title,
-            "placeId" : place.placeId,
-            "detailsUrl" : reverse('place_json', kwargs={'placeId':place.placeId})
+            "placeId" : place.place_id,
+            "detailsUrl" : reverse('place_json', kwargs={'place_id':place.place_id})
         }
     } for place in places]
 
@@ -25,14 +25,14 @@ def index(request) :
         "type" : "FeatureCollection",
         "features" : features}
 
-    data = {"places_geojson" : places_geojson}
+    context = {"places_geojson" : places_geojson}
 
-    return render(request, 'index.html', data)
+    return render(request, 'index.html', context)
 
 
-def place_json(request, placeId) :
-    place = get_object_or_404(Place.objects.prefetch_related('images'), placeId=placeId)
-    data = {
+def place_json(request, place_id) :
+    place = get_object_or_404(Place.objects.prefetch_related('images'), placeId=place_id)
+    response_data = {
         "title" : place.title,
         "imgs" : [image.image.url for image in place.images.all()],
         "description_short" : place.description_short,
@@ -43,4 +43,4 @@ def place_json(request, placeId) :
         }
     }
 
-    return JsonResponse(data, json_dumps_params={'ensure_ascii': False})
+    return JsonResponse(response_data, json_dumps_params={'ensure_ascii': False})
