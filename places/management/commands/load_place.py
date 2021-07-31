@@ -5,6 +5,8 @@ from places.models import Place, PlaceImage
 from transliterate import translit
 from django.core.files.base import ContentFile
 import logging
+from urllib.parse import urlparse, unquote
+import os.path
 
 
 class Command(BaseCommand) :
@@ -15,29 +17,28 @@ class Command(BaseCommand) :
 
     def handle(self, *args, **options) :
         url = options['url']
-        try :
             response = requests.get(url)
             response.raise_for_status()
-            place_data = response.json()
-        except Exception as error :
-            logging.error(error)
+            loaded_place = response.json()
+        except Exception :
+            logging.exception('')
             return
 
         place, created = Place.objects.get_or_create(
-            title=place_data['title'],
+            title=loaded_place['title'],
             defaults={
-                'place_id' : slugify(translit(place_data['title'][:100], 'ru', reversed=True)),
-                'description_short' : place_data['description_short'],
-                'description_long' : place_data['description_long'],
-                'longitude' : place_data['coordinates']['lng'],
-                'latitude' : place_data['coordinates']['lat'],
+                'place_id' : slugify(translit(loaded_place['title'][:100], 'ru', reversed=True)),
+                'description_short' : loaded_place['description_short'],
+                'description_long' : loaded_place['description_long'],
+                'longitude' : loaded_place['coordinates']['lng'],
+                'latitude' : loaded_place['coordinates']['lat'],
             }
         )
 
         if not created :
             return
 
-        for order, img_url in enumerate(place_data['imgs'], 1) :
+        for order, img_url in enumerate(loaded_place['imgs'], 1) :
             try :
                 response = requests.get(img_url)
                 response.raise_for_status()
@@ -46,7 +47,11 @@ class Command(BaseCommand) :
 
                 place_img = PlaceImage(place=place, order=order)
 
-                img_name = img_url.split('/')[-1]
+                url_parts = urlparse(img_url)
+                img_path = url_parts.path
+                (_, img_name) = os.path.split(img_path)
+                img_name = unquote(img_name)
+
                 place_img.image.save(img_name, content_file, True)
-            except Exception as error :
-                logging.error(error)
+            except Exception :
+                logging.exception('')
