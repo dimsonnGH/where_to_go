@@ -20,17 +20,16 @@ class Command(BaseCommand):
         response = requests.get(url)
         response.raise_for_status()
         loaded_place = response.json()
-
-    place, created = Place.objects.get_or_create(
-        title=loaded_place['title'],
-        defaults={
-            'place_id': slugify(translit(loaded_place['title'][:100], 'ru', reversed=True)),
-            'description_short': loaded_place['description_short'],
-            'description_long': loaded_place['description_long'],
-            'longitude': loaded_place['coordinates']['lng'],
-            'latitude': loaded_place['coordinates']['lat'],
-        }
-    )
+        place, created = Place.objects.get_or_create(
+            title=loaded_place['title'],
+            defaults={
+                'place_id': slugify(translit(loaded_place['title'][:100], 'ru', reversed=True)),
+                'description_short': loaded_place['description_short'],
+                'description_long': loaded_place['description_long'],
+                'longitude': loaded_place['coordinates']['lng'],
+                'latitude': loaded_place['coordinates']['lat'],
+            }
+        )
 
     if not created:
         return
