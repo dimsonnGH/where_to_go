@@ -34,6 +34,8 @@ class Command(BaseCommand):
         if not created:
             return
 
+        print(f'{place.title} downloaded')
+
         for order, img_url in enumerate(loaded_place['imgs'], 1):
             response = requests.get(img_url)
             response.raise_for_status()
@@ -48,3 +50,5 @@ class Command(BaseCommand):
             img_name = unquote(img_name)
 
             place_img.image.save(img_name, content_file, True)
+
+        print(f'{len(loaded_place["imgs"]) downloaded } images')
