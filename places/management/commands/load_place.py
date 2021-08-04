@@ -51,4 +51,4 @@ class Command(BaseCommand):
 
             place_img.image.save(img_name, content_file, True)
 
-        print(f'{len(loaded_place["imgs"]) downloaded } images')
+        print(f'{len(loaded_place["imgs"]) downloaded} images')
