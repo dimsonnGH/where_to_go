@@ -17,7 +17,7 @@ http://lopata.pythonanywhere.com/admin
 https://github.com/devmanorg/where-to-go-places/tree/master/places
 Чтобы загрузить описание отдельной достопримечательности, выберите файл, откройте его на отдельной странице и нажмите кнопку Raw. Так вы получите ссылку на исходный код файла. В терминале нужно выполнить следующую команда, в качестве параметра использовать полученную ссылку:
 
-`python manage.py load_place http://адрес/файла.json`
+`python manage.py load_place http://<адрес файла>.json`
 
 
 ## Запуск
