@@ -31,20 +31,20 @@ class Command(BaseCommand):
             }
         )
 
-    if not created:
-        return
+        if not created:
+            return
 
-    for order, img_url in enumerate(loaded_place['imgs'], 1):
-        response = requests.get(img_url)
-        response.raise_for_status()
+        for order, img_url in enumerate(loaded_place['imgs'], 1):
+            response = requests.get(img_url)
+            response.raise_for_status()
 
-        content_file = ContentFile(response.content)
+            content_file = ContentFile(response.content)
 
-        place_img = PlaceImage(place=place, order=order)
+            place_img = PlaceImage(place=place, order=order)
 
-        url_parts = urlparse(img_url)
-        img_path = url_parts.path
-        (_, img_name) = os.path.split(img_path)
-        img_name = unquote(img_name)
+            url_parts = urlparse(img_url)
+            img_path = url_parts.path
+            (_, img_name) = os.path.split(img_path)
+            img_name = unquote(img_name)
 
-        place_img.image.save(img_name, content_file, True)
+            place_img.image.save(img_name, content_file, True)
